@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Speed and modularity w/ JS micro-libs</title>
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="css/reveal.min.css">
+  <link rel="stylesheet" href="css/theme/default.css" id="theme">
+  <style>
+    .logo {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .reveal section img {
+      background-color: #fff;
+      border-color: #f3f3f3;
+      padding: 5px;
+    }
+    .reveal section .logo-wrapper img {
+      background-color: transparent;
+      padding: 0;
+      margin: 10px;
+    }
+    .logo-wrapper {
+      position: relative;
+      display: inline;
+    }
+    .logo-info {
+      position: absolute;
+      bottom: 20px;
+      left: 15px;
+    }
+  </style>
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="lib/css/zenburn.css">
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/print/pdf.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+  </script>
+
+  <!--[if lt IE 9]>
+  <script src="lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+  <div class="reveal">
+    <img class="logo" src="img/ac-logo.png" alt="Avenue Code logo" />
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+        <section>
+          <h2>Speed and Modularity with</h2>
+          <h1>JS micro-libraries</h1>
+          <p>
+            <small>by <strong>Ciro Nunes</strong> <a href="http://avenuecode.com/">@AvenueCode</a></small>
+          </p>
+        </section>
+
+        <section>
+          <section>
+            <div data-markdown>
+              This talk is about *Mobile Web Apps* performance
+            </div>
+            <aside class="notes">
+              This presentation is about Mobile Web Apps performance. We know that the most important feature 
+              of all application is the performance. We can have the best design and the most cool features, but 
+              if it's slow, nobody will use it!
+            </aside>
+          </section>
+
+          <section>
+            <div data-markdown>
+              > a 1-second page slowdown could cost Amazon $1.6 billion in sales each year.
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ![Performance == UX](http://img.readitlater.com/i/www.webperformancetoday.com/wp-content/uploads/2012/03/Jakob-Nielsen-response-time-infographic/RS/w640.jpg)
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ## Performance == UX
+            </div>
+          </section>
+
+          <section>
+             <div data-markdown>
+               ![4G Speed](img/4g-speed.png)
+               [opensignal.com/reports/state-of-lte/usa-q1-2014/](http://opensignal.com/reports/state-of-lte/usa-q1-2014/)
+             </div>
+          </section>
+
+           <section>
+             <div data-markdown>
+               ![Mobile vs Desktop usage](img/mobile-vs-desktop.jpg)
+             </div>
+           </section>
+        </section>
+
+        <section>
+          <div data-markdown>
+            ## Agenda
+          </div>
+          <ul>
+            <li class="fragment">Why micro-libs?</li>
+            <li class="fragment">Pros and Cons of using micro-libs</li>
+            <li class="fragment">Where to find great micro-libs?</li>
+            <li class="fragment">Loading strategies</li>
+            <li class="fragment">Performance vs Maintainibility</li>
+          </ul>
+        </section>
+
+        <section>
+          <section>
+            <div data-markdown>
+              > “A library is essentially a set of functions that you can call”
+              - [Martin Fowler](http://martinfowler.com/bliki/InversionOfControl.html)
+            </div>
+          </section>
+
+          <section>
+            <div class="logo-wrapper">
+              <img src="img/logo-jquery.png" alt="jQuery logo">
+              <small class="logo-info fragment">84kb</small>
+            </div>
+
+            <div class="logo-wrapper">
+              <img src="img/logo-handlebars.png" alt="Handlebars logo">
+              <small class="logo-info fragment">88kb</small>
+            </div>
+
+            <br>
+
+            <div class="logo-wrapper">
+              <img src="img/emberjs-logo.png" alt="Ember logo" height="207">
+              <small class="logo-info fragment">272kb</small>
+            </div>
+
+            <div class="logo-wrapper">
+              <img src="img/bootstrap-logo.png" alt="Bootstrap logo" height="207">
+              <small class="logo-info fragment">32kb</small>
+            </div>
+
+            <div class="logo-wrapper">
+              <img src="img/angular-logo.png" alt="Angular logo">
+              <small class="logo-info fragment">104kb</small>
+            </div>
+          </section>
+
+          <section>
+            <h2>Why do we use JS libraries?</h2>
+            <ul>
+              <li class="fragment">Manipulate DOM</li>
+              <li class="fragment">Data-binding</li>
+              <li class="fragment">Animations</li>
+              <li class="fragment">Event handling</li>
+              <li class="fragment">Ajax</li>
+              <li class="fragment">Promises</li>
+              <li class="fragment">HTML Templates</li>
+              <li class="fragment">Utilities</li>
+              <li class="fragment grow">Cross-browser compatibility</li>
+            </ul>
+          </section>
+
+          <section>
+            <p>But we don't always need that whole thing!</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Micro-libraries</h2>
+            <ul>
+              <li class="fragment">are small (4kb ~ 15kb)</li>
+              <li class="fragment">are specific purpose focused</li>
+              <li class="fragment">are loose coupled</li>
+              <li class="fragment">are modular</li>
+              <li class="fragment">are ease to understand</li>
+              <li class="fragment">I said that they're small?!</li>
+            </ul>
+          </section>
+
+          <section>
+            <div data-markdown>
+              > “Microlibraries are small sets of specific purpose functions that you can call”
+              - [Ciro Nunes](http://twitter.com/cironunes/)
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <div data-markdown>
+              ## Where to find great micro-libs?
+              ![MicroJS](img/microjs.png)
+              [microjs.com](http://microjs.com/)
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ![MoutJS](img/mout.png)
+              [moutjs.com](http://moutjs.com/)
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ### Protip: custom build
+              [![How to build your own jQuery](img/own-jquery.png)](https://github.com/jquery/jquery#how-to-build-your-own-jquery)
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ### Protip: custom build
+              [![Lodash custom builds](img/own-lodash.png)](http://lodash.com/custom-builds)
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Micro-libs: The Cons</h2>
+            <p>Using micro-libs we usally lose:</p>
+            <ul>
+              <li class="fragment">Big cross-browser support</li>
+              <li class="fragment">Heavy unit tested code</li>
+              <li class="fragment">Centralized docs and bug tracking</li>
+            </ul>
+          </section>
+
+          <section>
+            <p>You may need to reinvent the wheel sometimes</p>
+          </section>
+
+          <section>
+            <div data-markdown>
+              As our application grows we'll probably end with a bunch of micro-libs that
+              combined in the same file will be the same of a large library.
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <div data-markdown>
+              ## Loading strategies
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              > Our goal is show content for the user interact as soon as possible
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ## Eager loading
+              load everything at the first time
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ## Lazy loading
+              load just what you need and then request for the rest
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ## Loading on demand
+              load when the user ask for the functionality
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ## Over-eager loading
+              try to antecipate what the user will need and load
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ## Tools
+              ![RequireJS Logo](img/requirejs.png)
+              ![YepnopeJS Logo](img/yepnope-logo.png)
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <div data-markdown>
+              Should I drop that large library for a micro-lib?
+            </div>
+          </section>
+
+          <section>
+            <div data-markdown>
+              ## Some things to consider
+              - Do you need a large cross-browser support?
+              - Is your deadline too short?
+              - Are you afraid to leave your comfort zone?
+            </div>
+          </section>
+
+          <section>
+            <p>If not you're good to go!</p>
+          </section>
+        </section>
+
+        <section>
+          <div data-markdown>
+            ## Learn more
+            - [Pros and Cons of JavaScript Micro-Frameworks](addyosmani.com/blog/prosconsmicroframeworks/)
+            - [RequireJS Website](requirejs.org)
+            - [How to Build your own jQuery](https://github.com/jquery/jquery#how-to-build-your-own-jquery)
+          </div>
+        </section>
+
+        <section>
+          <div data-markdown>
+            <script type="text/template">
+              ## Challenge
+              - Reimplement an existent application (aka UI Bootcamp's Quiz) to use some micro-libs <!-- .element: class="fragment" -->
+              - Use a custom version of jQuery with just the needed features <!-- .element: class="fragment" -->
+              - Implement one of the presented loading strategies to improve the performance of the app <!-- .element: class="fragment" -->
+              - Measure the improvements and put a screenshot in the Github repo <!-- .element: class="fragment" -->
+            </script>
+          </div>
+        </section>
+
+        <section>
+          <h1>THE END</h1>
+          <h3>by Ciro Nunes <a href="http://avenuecode.com/">@Avenue Code</a></h3>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+        // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
